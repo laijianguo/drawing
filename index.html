@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>huabu</title>
+		<style>
+			#canvas{
+				display: block;
+				margin: auto;
+				border: 1px solid #000;
+			}
+			div{
+				text-align: center;
+			}
+			.chgColor{
+				border:1px solid #000;
+				width: 20px;
+				height: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<div>
+			<canvas id="canvas"></canvas><br />
+			<button type="蓝色" class="chgColor" value="#00f" style="background: blue;"></button>
+			<button type="绿色" class="chgColor" value="#0f0" style="background: #0f0;"></button>
+			<button type="黄色" class="chgColor" value="yellow" style="background: yellow;"></button>
+			<input type="" name="" value="" placeholder="输入笔画粗细" id="lineWidthValue" />
+			<button id="setLineWidth">设置</button>
+			<button id="clear">清空</button></br>
+			<span id="zuobiao"></span>
+		</div>
+
+		<script>
+/*//			                             对象  属性
+			function getStyle(obj,attr){
+				if(obj.currentStyle) return obj.currentStyle[attr]
+				return getComputedStyle(obj,null)[attr];
+			}*/
+
+			var cvs = document.getElementById('canvas');
+			var ctx = cvs.getContext('2d');
+
+			var setLineWidthBtn = document.getElementById('setLineWidth');
+			var clear = document.getElementById('clear');
+			var zuobiao = document.getElementById("zuobiao");
+
+			cvs.height= 550;
+			cvs.width = 1000;
+			lineColor = '#f00';
+			lineWidth = 5;
+
+			document.onmousemove = function(e){
+				zuobiao.innerHTML = 'x:' + e.pageX + ' y: ' + e.pageY;
+			}
+
+			//获取className
+			function getClass(className){
+				var classes = [];
+				var eles = document.getElementsByTagName('*');
+				for (i in eles) {
+					if(eles[i].className === className){
+						classes.push(eles[i]);
+					}
+				}
+				return classes;
+			}
+
+			var chgColorBtns = getClass('chgColor');
+			for (i in chgColorBtns){
+				chgColorBtns[i].onclick = function(){
+					lineColor = this.value;
+				}
+
+			}
+
+			setLineWidthBtn.onclick = function(){
+				lineWidth = parseInt(document.getElementById('lineWidthValue').value);
+							//parseInt解析字符串，并返回一个整数
+			}
+
+			clear.onclick = function(){
+				ctx.beginPath();
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				ctx.closePath();
+			}
+
+			cvs.onmousedown = function(e){
+				ctx.beginPath();                    //开始路径
+				ctx.moveTo(e.pageX - cvs.offsetLeft, e.pageY - cvs.offsetTop);       //记录鼠标坐标
+				ctx.strokeStyle = lineColor;
+				ctx.lineCap = 'round';              //划线圆形
+				ctx.lineWidth = lineWidth;
+				cvs.onmousemove = function(e){
+					ctx.lineTo(e.pageX - cvs.offsetLeft, e.pageY - cvs.offsetTop);
+					ctx.stroke();                     //画
+				}
+				cvs.onmouseup = function(e){
+					ctx.closePath();                 //结束路径
+					cvs.onmousemove = null;         //结束笔画动作
+//					cvs.onmouseup = null;
+				}
+			}
+
+		</script>
+	</body>
+</html>
